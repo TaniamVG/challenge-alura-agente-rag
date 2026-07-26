@@ -51,7 +51,9 @@ El sistema sigue un pipeline RAG local para evitar dependencias de cuotas extern
 > **Pregunta:** *¿Qué pasa si llego 15 minutos tarde a mi consulta?*  
 > **Pregunta:** *¿Tienen servicio de ambulancia nocturna?*
 
-![Evidencia de Prueba 1](imgs/prueba_1.png)
+![Evidencia de Prueba 1](imgs/Prueba_1.png)
+![Evidencia de Prueba 2](imgs/Prueba_2.png)
+![Evidencia de Prueba 3](imgs/Prueba_3.png)
 
 ---
 
@@ -65,4 +67,5 @@ Durante la etapa de pruebas, se realizó una consulta fuera del contexto médico
 * **Solución Implementada:** Se ajustó la plantilla de prompt a un formato determinista de regla estricta y se configuró la temperatura a 0, asegurando que ante información no presente en el PDF, el agente responda formalmente:  
   `"No dispongo de esa información en mis documentos,."`
 
-![Prueba de Control de Alucinaciones](imgs/alucinacion_controlada.png)
+![Alucinación agente](imgs/Alucinación_agente.png)
+![Alucinación agente corregida](imgs/Corrección_de_alucinación.png)
