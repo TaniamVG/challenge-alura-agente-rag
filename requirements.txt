@@ -5,3 +5,7 @@ langchain
 langchain-community
 pypdf
 chromadb
+reportlab
+streamlit
+torch
+transformers
