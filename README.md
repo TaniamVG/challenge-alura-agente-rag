@@ -66,18 +66,18 @@ A continuación se presentan las capturas del agente funcionando en producción 
 
 ### 1. Respuestas a Consultas Oficiales
 
-![Prueba Horarios](./ruta-o-link-de-tu-imagen-1.png)
+![Prueba Horarios](./imgs/prueba_1.png)
 *Prueba 1: Consulta sobre horarios de atención los sábados.*
 
-![Prueba Tolerancia](./ruta-o-link-de-tu-imagen-2.png)
+![Prueba Tolerancia](./imgs/prueba_2.png)
 *Prueba 2: Consulta sobre la política de tolerancia y retrasos en citas.*
 
 ### 2. Control de Alucinaciones (Información No Disponible)
 
-![Prueba Alucinación](./ruta-o-link-de-tu-imagen-3.png)
+![Prueba Alucinación](./imgs/prueba_3.png)
 *Prueba 3: Demostración del comportamiento de seguridad al preguntar por servicios no incluidos en el PDF (ej. ¿Tienen servicio de ambulancia nocturna?).*
 
 ### 3. Estado del Servicio en Producción (Render)
 
-![Status Render Live](./ruta-o-link-de-tu-imagen-render.png)
+![Status Render Live](./imgs/status_render_ejecutado.png)
 *Panel de Render confirmando la compilación exitosa y el estado activo del servicio (`Status: Live`).*
