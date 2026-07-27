@@ -1,0 +1,7 @@
+google-genai
+langchain-huggingface
+sentence-transformers
+langchain
+langchain-community
+pypdf
+chromadb
