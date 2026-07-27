@@ -74,7 +74,7 @@ A continuación se presentan las capturas del agente funcionando en producción 
 
 ### 2. Control de Alucinaciones (Información No Disponible)
 
-![Prueba Alucinación](./imgs/prueba_3 (alucinación).png)
+![Prueba Alucinación](./imgs/prueba_3.png)
 *Prueba 3: Demostración del comportamiento de seguridad al preguntar por servicios no incluidos en el PDF (ej. ¿Tienen servicio de ambulancia nocturna?).*
 
 ### 3. Estado del Servicio en Producción (Render)
