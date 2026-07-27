@@ -1,71 +1,83 @@
-# Agente Virtual RAG - Centro Médico Vitalis
-Un agente de inteligencia artificial con arquitectura **RAG (Retrieval-Augmented Generation)** diseñado para responder consultas frecuentes de pacientes sobre el Centro Médico Vitalis a partir de su documento interno de políticas y servicios.
-Desarrollado como parte del **Challenge Alura Agente**.
-## Arquitectura de la Solución
+# 🏥 Agente RAG - Centro Médico Vitalis
 
-El sistema sigue un pipeline RAG local para evitar dependencias de cuotas externas y garantizar un rendimiento estable:
-
-1. **Carga y Procesamiento de Documentos:**
-   * **Fuente:** Documento en formato PDF (`consultorio_medico.pdf`).
-   * **Lector:** `PyPDFLoader` de LangChain.
-   * **División de Texto:** `RecursiveCharacterTextSplitter` con `chunk_size=800` y `chunk_overlap=80`.
-
-2. **Base Vectorial y Embeddings:**
-   * **Modelo de Embeddings:** `all-MiniLM-L6-v2` (HuggingFace).
-   * **Base de Datos Vectorial:** `ChromaDB` cargada localmente.
-
-3. **Modelo de Lenguaje (LLM) y Generación:**
-   * **Modelo Local:** `Qwen/Qwen2.5-0.5B-Instruct` ejecutado en GPU (PyTorch/Transformers).
-   * **Técnica Anti-Alucinaciones:** Prompting estricto delimitado por contexto y parámetro `temperature=0.0`.
+Un agente conversacional inteligente basado en **RAG (Retrieval-Augmented Generation)** diseñado para resolver dudas y consultas de pacientes del **Centro Médico Vitalis**, garantizando respuestas deterministas y libre de alucinaciones.
 
 ---
 
-## Tecnologías Utilizadas
+## Tecnologías y Herramientas
 
-* **Lenguaje:** Python 3.12
-* **Framework de IA:** LangChain, HuggingFace Transformers
-* **Base Vectorial:** ChromaDB
-* **Modelos:** Qwen 2.5 (0.5B Instruct) & MiniLM-L6-v2
-* **Interfaz de Usuario:** ipywidgets
-* **Entorno de Ejecución:** Google Colab con aceleración T4 GPU / Oracle Cloud Infrastructure (OCI)
-
----
-
-## Instrucciones de Ejecución
-
-1. Abre el archivo `agente_rag_vitalis.ipynb` en Google Colab o en tu entorno preferido.
-2. Asegúrate de seleccionar un entorno con **GPU activada** (`Entorno de ejecución > Cambiar tipo de entorno de ejecución > T4 GPU`).
-3. Ejecuta las celdas en orden secuencial:
-   * **Celda 1:** Instalación de dependencias.
-   * **Celda 2:** Generación del documento PDF base.
-   * **Celda 3:** Inicialización de embeddings, base vectorial ChromaDB y modelo LLM.
-   * **Celda 4:** Despliegue de la interfaz interactiva para realizar preguntas.
+* **Lenguaje:** Python 3.10+
+* **Procesamiento de Documentos:** `LangChain` & `PyPDF`
+* **Generación del Documento Base:** `ReportLab`
+* **LLM Engine & Inferencia:** `Groq API` (`llama-3.1-8b-instant`)
+* **Interfaz de Usuario:** `Streamlit`
+* **Despliegue & Hosting Cloud:** `Render`
 
 ---
 
-## Ejemplos de Funcionamiento y Evidencias
+## Arquitectura del Sistema
 
-### Preguntas Válidas (Basadas en el Documento)
-
-> **Pregunta:** *¿Cuáles son los horarios de atención los sábados?*  
-> **Pregunta:** *¿Qué pasa si llego 15 minutos tarde a mi consulta?*  
-> **Pregunta:** *¿Tienen servicio de ambulancia nocturna?*
-
-![Evidencia de Prueba 1](imgs/Prueba_1.png)
-![Evidencia de Prueba 2](imgs/Prueba_2.png)
-![Evidencia de Prueba 3](imgs/Prueba_3.png)
+1. **Generación del Conocimiento:** Se crea dinámicamente un documento PDF estructurado (`consultorio_medico.pdf`) con las políticas, horarios y reglamentos oficiales de la clínica.
+2. **Procesamiento de Texto:** Mediante `PyPDFLoader` y `RecursiveCharacterTextSplitter`, el documento se fragmenta en bloques (*chunks*) para su análisis.
+3. **Inferencia Determinista (Zero-Hallucination):** El modelo `llama-3.1-8b-instant` procesa el contexto delimitado y aplica una regla estricta: si la información no está explícita en el documento, responde únicamente con la plantilla de abstención predeterminada.
+4. **Interfaz Interactiva:** Una app web en `Streamlit` que permite a los usuarios hacer preguntas en tiempo real.
 
 ---
 
-### Caso Borde y Control de Alucinaciones
+## Preguntas Frecuentes y Capacidades
 
-Durante la etapa de pruebas, se realizó una consulta fuera del contexto médico humano:
+### Ejemplos de preguntas que el agente puede responder:
+*(Consultas respaldadas por la información oficial del documento del Centro Médico Vitalis)*
 
-> **Pregunta fuera de contexto:** *¿Tienen servicio de veterinaria?*
+* **Horarios y Turnos:**
+  * ¿Cuáles son los horarios de atención los sábados?
+  * ¿Cómo puedo agendar una cita médica?
+  * ¿Con cuánta anticipación debo llegar a mi consulta?
 
-* **Comportamiento Inicial:** El modelo generó una respuesta afirmativa inventada (*alucinación*), asumiendo erróneamente que el centro médico atendía mascotas.
-* **Solución Implementada:** Se ajustó la plantilla de prompt a un formato determinista de regla estricta y se configuró la temperatura a 0, asegurando que ante información no presente en el PDF, el agente responda formalmente:  
-  `"No dispongo de esa información en mis documentos,."`
+* **Políticas de Cancelación y Tolerancia:**
+  * ¿Qué pasa si llego 15 minutos tarde a mi consulta?
+  * ¿Cuál es el costo por cancelar una cita con menos de 24 horas de anticipación?
+  * ¿Existe algún cargo por reagendar mi turno con tiempo?
 
-![Alucinación agente](imgs/Alucinación_agente.png)
-![Alucinación agente corregida](imgs/Corrección_de_alucinación.png)
+* **Aseguradoras y Coberturas:**
+  * ¿Qué seguros o coberturas médicas aceptan?
+  * ¿Cómo funciona el trámite de reembolso si pago de forma particular?
+
+* **Indicaciones Médicas y Privacidad:**
+  * ¿Cuántas horas de ayuno se requieren para un análisis de sangre?
+  * ¿Qué preparación necesito para un ultrasonido abdominal?
+  * ¿Cuánto tiempo de vigencia tienen las recetas médicas?
+  * ¿Cómo garantizan la privacidad de mi expediente clínico?
+
+---
+
+## Despliegue en la Nube (Deploy con Render)
+
+> **Nota sobre la infraestructura:** Inicialmente se consideró el despliegue en **Oracle Cloud Infrastructure (OCI)**; sin embargo, debido a la falta de disponibilidad de instancias de cómputo en la capa gratuita (*Out of capacity*), se optó por **Render** como plataforma de PaaS por su alta disponibilidad, despliegue continuo desde GitHub y rendimiento óptimo con arquitecturas basadas en APIs.
+
+### 🌐 Enlace de la Aplicación en Vivo:
+**[Ver Agente RAG en Render](https://challenge-alura-agente-rag.onrender.com)**
+
+---
+
+## Evidencia de Ejecución y Pruebas del Agente
+
+A continuación se presentan las capturas del agente funcionando en producción a través del enlace público de **Render**:
+
+### 1. Respuestas a Consultas Oficiales
+
+![Prueba Horarios](./ruta-o-link-de-tu-imagen-1.png)
+*Prueba 1: Consulta sobre horarios de atención los sábados.*
+
+![Prueba Tolerancia](./ruta-o-link-de-tu-imagen-2.png)
+*Prueba 2: Consulta sobre la política de tolerancia y retrasos en citas.*
+
+### 2. Control de Alucinaciones (Información No Disponible)
+
+![Prueba Alucinación](./ruta-o-link-de-tu-imagen-3.png)
+*Prueba 3: Demostración del comportamiento de seguridad al preguntar por servicios no incluidos en el PDF (ej. ¿Tienen servicio de ambulancia nocturna?).*
+
+### 3. Estado del Servicio en Producción (Render)
+
+![Status Render Live](./ruta-o-link-de-tu-imagen-render.png)
+*Panel de Render confirmando la compilación exitosa y el estado activo del servicio (`Status: Live`).*
