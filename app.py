@@ -8,7 +8,7 @@ Original file is located at
 """
 import os
 import streamlit as st
-from google import genai
+from groq import Groq
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -18,13 +18,13 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 # Configuración del entorno
 #!pip install -qU google-genai langchain-huggingface sentence-transformers langchain langchain-community pypdf chromadb
-api_key = os.environ.get('GEMINI_API_KEY_2')
+api_key = os.environ.get('GROQ_API_KEY')
 
 if not api_key:
-    st.error("No se encontró la variable de entorno GEMINI_API_KEY_2 en Render.")
+    st.error("No se encontró la variable de entorno GROQ_API_KEY en Render. Por favor agrégala en la pestaña Environment.")
     st.stop()
 
-client = genai.Client(api_key=api_key)
+client = Groq(api_key=api_key)
 
 #Generación del documento PDF de base de conocimientos para el Centro Médico Vitalis
 
@@ -79,23 +79,19 @@ splits = obtener_fragmentos_pdf()
 
 def consultar_agente(pregunta_usuario):
     contexto = "\n\n".join([doc.page_content for doc in splits])
-    prompt = f"""
-Eres un robot asistente del Centro Médico Vitalis (atención HUMANA). Tu regla de oro es: Responde SOLO con el contexto proporcionado. Si la respuesta no está en el contexto, di textualmente: 'No dispongo de esa información en mis documentos.'
-
-CONTEXTO DEL PDF:
-{contexto}
-
-PREGUNTA DEL USUARIO:
-{pregunta_usuario}
-
-RESPUESTA (SI NO ESTÁ EN EL CONTEXTO, DI 'No dispongo de esa información en mis documentos, ¿Tienes alguna otra pregunta?.'):
-"""
     
-    response = client.models.generate_content(
-        model='gemini-1.5-flash',
-        contents=prompt,
+    system_prompt = "Eres un robot asistente del Centro Médico Vitalis (atención HUMANA). Tu regla de oro es: Responde SOLO con el contexto proporcionado. Si la respuesta no está en el contexto, di textualmente: 'No dispongo de esa información en mis documentos.'"
+    user_prompt = f"CONTEXTO DEL PDF:\n{contexto}\n\nPREGUNTA DEL USUARIO:\n{pregunta_usuario}\n\nRESPUESTA (SI NO ESTÁ EN EL CONTEXTO, DI 'No dispongo de esa información en mis documentos, ¿Tienes alguna otra pregunta?.'):"
+
+    chat_completion = client.chat.completions.create(
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        model="llama-3.1-8b-instant",
+        temperature=0.0
     )
-    return response.text
+    return chat_completion.choices[0].message.content
     
 #Interfaz interactiva para el usuario
 st.title("🏥 Centro Médico Vitalis")
