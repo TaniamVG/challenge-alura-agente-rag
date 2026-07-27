@@ -23,6 +23,17 @@ Un agente conversacional inteligente basado en **RAG (Retrieval-Augmented Genera
 * **Despliegue & Hosting Cloud:** `Render`
 
 ---
+## 📁 Estructura del Repositorio
+
+```text
+├── app.py                     # Aplicación principal en Streamlit y lógica RAG (Producción)
+├── requirements.txt           # Lista de dependencias para el despliegue
+├── consultorio_medico.pdf     # Documento base de conocimientos generado
+├── notebooks/
+│   └── Challenge_Alura.ipynb  # Cuaderno de prototipado y pruebas en Google Colab
+└── imgs/                      # Capturas de pantalla y evidencias
+```
+---
 
 ## Preguntas Frecuentes y Capacidades
 
