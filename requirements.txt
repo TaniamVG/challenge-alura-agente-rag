@@ -1,7 +1,6 @@
-google-genai
+groq
 langchain
 langchain-community
 pypdf
-chromadb
 reportlab
 streamlit
