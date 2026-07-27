@@ -1,6 +1,15 @@
 # 🏥 Agente RAG - Centro Médico Vitalis
 
-Un agente conversacional inteligente basado en **RAG (Retrieval-Augmented Generation)** diseñado para resolver dudas y consultas de pacientes del **Centro Médico Vitalis**, garantizando respuestas deterministas y libre de alucinaciones.
+Un agente conversacional inteligente basado en **RAG (Retrieval-Augmented Generation)** diseñado para resolver dudas y consultas de pacientes del **Centro Médico Vitalis** (ejemplo ficticio), garantizando respuestas deterministas y libre de alucinaciones.
+
+---
+
+## Arquitectura del Sistema
+
+1. **Generación del Conocimiento:** Se crea dinámicamente un documento PDF estructurado (`consultorio_medico.pdf`) con las políticas, horarios y reglamentos oficiales de la clínica.
+2. **Procesamiento de Texto:** Mediante `PyPDFLoader` y `RecursiveCharacterTextSplitter`, el documento se fragmenta en bloques (*chunks*) para su análisis.
+3. **Inferencia Determinista (Zero-Hallucination):** El modelo `llama-3.1-8b-instant` procesa el contexto delimitado y aplica una regla estricta: si la información no está explícita en el documento, responde únicamente con la plantilla de abstención predeterminada.
+4. **Interfaz Interactiva:** Una app web en `Streamlit` que permite a los usuarios hacer preguntas en tiempo real.
 
 ---
 
@@ -12,15 +21,6 @@ Un agente conversacional inteligente basado en **RAG (Retrieval-Augmented Genera
 * **LLM Engine & Inferencia:** `Groq API` (`llama-3.1-8b-instant`)
 * **Interfaz de Usuario:** `Streamlit`
 * **Despliegue & Hosting Cloud:** `Render`
-
----
-
-## Arquitectura del Sistema
-
-1. **Generación del Conocimiento:** Se crea dinámicamente un documento PDF estructurado (`consultorio_medico.pdf`) con las políticas, horarios y reglamentos oficiales de la clínica.
-2. **Procesamiento de Texto:** Mediante `PyPDFLoader` y `RecursiveCharacterTextSplitter`, el documento se fragmenta en bloques (*chunks*) para su análisis.
-3. **Inferencia Determinista (Zero-Hallucination):** El modelo `llama-3.1-8b-instant` procesa el contexto delimitado y aplica una regla estricta: si la información no está explícita en el documento, responde únicamente con la plantilla de abstención predeterminada.
-4. **Interfaz Interactiva:** Una app web en `Streamlit` que permite a los usuarios hacer preguntas en tiempo real.
 
 ---
 
@@ -81,3 +81,10 @@ A continuación se presentan las capturas del agente funcionando en producción 
 
 ![Status Render Live](./imgs/status_render_ejecutado.png)
 *Panel de Render confirmando la compilación exitosa y el estado activo del servicio (`Status: Live`).*
+
+---
+
+## 👩‍💻 Autora
+
+* **Tania Vázquez**
+* *Challenge elaborado como parte de la formación de Tech Builder por Alura Latam junto con Oracle Next Education (ONE)* 
