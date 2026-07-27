@@ -24,16 +24,11 @@ Un agente conversacional inteligente basado en **RAG (Retrieval-Augmented Genera
 
 ---
 ## 📁 Estructura del Repositorio
-
-```text
-├── app.py                     # Aplicación principal en Streamlit y lógica RAG (Producción)
-├── requirements.txt           # Lista de dependencias para el despliegue
-├── consultorio_medico.pdf     # Documento base de conocimientos generado
-├── notebooks/
-│   └── Challenge_Alura.ipynb  # Cuaderno de prototipado y pruebas en Google Colab
-└── imgs/                      # Capturas de pantalla y evidencias
-```
----
+* `app.py`: Código principal del Agente RAG e interfaz en Streamlit (versión de producción).
+* `consultorio_medico.pdf`: Documento base de conocimientos generado
+* `requirements.txt`: Dependencias del proyecto para el despliegue.
+* `notebooks/Challenge_Alura.ipynb`: Libreta de experimentación y prototipado inicial en Google Colab.
+* `imgs/`: Capturas de pantalla y evidencias
 
 ## Preguntas Frecuentes y Capacidades
 
