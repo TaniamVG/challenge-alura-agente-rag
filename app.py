@@ -78,9 +78,7 @@ def obtener_fragmentos_pdf():
 splits = obtener_fragmentos_pdf()
 
 def consultar_agente(pregunta_usuario):
-    # Obtenemos todo el contenido relevante del PDF como contexto
     contexto = "\n\n".join([doc.page_content for doc in splits])
-    
     prompt = f"""
 Eres un robot asistente del Centro Médico Vitalis (atención HUMANA). Tu regla de oro es: Responde SOLO con el contexto proporcionado. Si la respuesta no está en el contexto, di textualmente: 'No dispongo de esa información en mis documentos.'
 
@@ -94,7 +92,7 @@ RESPUESTA (SI NO ESTÁ EN EL CONTEXTO, DI 'No dispongo de esa información en mi
 """
     
     response = client.models.generate_content(
-        model='gemini-2.5-flash',
+        model='gemini-1.5-flash',
         contents=prompt,
     )
     return response.text
