@@ -56,7 +56,7 @@ Un agente conversacional inteligente basado en **RAG (Retrieval-Augmented Genera
 > **Nota sobre la infraestructura:** Inicialmente se consideró el despliegue en **Oracle Cloud Infrastructure (OCI)**; sin embargo, debido a la falta de disponibilidad de instancias de cómputo en la capa gratuita (*Out of capacity*), se optó por **Render** como plataforma de PaaS por su alta disponibilidad, despliegue continuo desde GitHub y rendimiento óptimo con arquitecturas basadas en APIs.
 
 ### 🌐 Enlace de la Aplicación en Vivo:
-**[Ver Agente RAG en Render](https://challenge-alura-agente-rag.onrender.com)**
+**Link público: https://challenge-alura-agente-rag.onrender.com**
 
 ---
 
@@ -74,7 +74,7 @@ A continuación se presentan las capturas del agente funcionando en producción 
 
 ### 2. Control de Alucinaciones (Información No Disponible)
 
-![Prueba Alucinación](./imgs/prueba_3.png)
+![Prueba Alucinación](./imgs/prueba_3 (alucinación).png)
 *Prueba 3: Demostración del comportamiento de seguridad al preguntar por servicios no incluidos en el PDF (ej. ¿Tienen servicio de ambulancia nocturna?).*
 
 ### 3. Estado del Servicio en Producción (Render)
