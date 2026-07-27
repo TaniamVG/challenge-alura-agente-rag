@@ -30,6 +30,34 @@ Un agente conversacional inteligente basado en **RAG (Retrieval-Augmented Genera
 * `notebooks/Challenge_Alura.ipynb`: Libreta de experimentación y prototipado inicial en Google Colab.
 * `imgs/`: Capturas de pantalla y evidencias
 
+---
+
+## Instrucciones para Ejecución Local
+
+Si deseas ejecutar y probar este proyecto de forma local en tu equipo:
+
+1. **Clonar el repositorio:**
+   ```bash
+   git clone [https://github.com/TU_USUARIO/challenge-alura-agente-rag.git](https://github.com/TU_USUARIO/challenge-alura-agente-rag.git)
+   cd challenge-alura-agente-rag
+   ```
+2. **Instalar dependencias**
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. **Configurar la API Key:**
+Crea una variable de entorno con tu clave de Groq:
+* Linux / Mac: `export GROQ_API_KEY="tu_api_key_aqui"`
+* Windows (CMD): `set GROQ_API_KEY="tu_api_key_aqui"`
+* Windows (PowerShell): `$env:GROQ_API_KEY="tu_api_key_aqui"`
+4. **Ejecutar la aplicación web:**
+  ```bash
+  streamlit run app.py
+  ```
+*(Recuerda reemplazar `TU_USUARIO` en el primer comando por tu nombre de usuario real en GitHub).*
+
+---
+
 ## Preguntas Frecuentes y Capacidades
 
 ### Ejemplos de preguntas que el agente puede responder:
