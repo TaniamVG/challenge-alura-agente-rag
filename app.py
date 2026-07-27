@@ -7,27 +7,22 @@ Original file is located at
     https://colab.research.google.com/drive/1I20r_pD2dzS93G_6qxdt7Q6qZDzZOa61
 """
 import os
-import torch
 import streamlit as st
 from google import genai
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
-from transformers import pipeline
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_community.vectorstores import Chroma
 
 # Configuración del entorno
 #!pip install -qU google-genai langchain-huggingface sentence-transformers langchain langchain-community pypdf chromadb
+api_key = os.environ.get('GEMINI_API_KEY_2')
 
-try:
-    from google.colab import userdata
-    api_key = userdata.get('GEMINI_API_KEY_2')
-except (ImportError, Exception):
-    api_key = os.environ.get('GEMINI_API_KEY_2')
+if not api_key:
+    st.error("No se encontró la variable de entorno GEMINI_API_KEY_2 en Render.")
+    st.stop()
 
 client = genai.Client(api_key=api_key)
 
@@ -71,62 +66,53 @@ def generar_pdf_clinica():
 
 if not os.path.exists("consultorio_medico.pdf"):
     generar_pdf_clinica()
-
+    
 #Configuración del pipeline RAG con modelo local y prompt estricto
 @st.cache_resource
-def cargar_agente_rag():
+def obtener_fragmentos_pdf():
     loader = PyPDFLoader("consultorio_medico.pdf")
     docs = loader.load()
-
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=80)
-    splits = text_splitter.split_documents(docs)
+    return text_splitter.split_documents(docs)
 
-    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-    vectorstore = Chroma.from_documents(documents=splits, embedding=embeddings)
-    retriever = vectorstore.as_retriever()
-
-    generator = pipeline(
-        "text-generation",
-        model="Qwen/Qwen2.5-0.5B-Instruct",
-        device=-1,  
-        torch_dtype=torch.float32
-    )
-    return retriever, generator
-
-retriever, generator = cargar_agente_rag()
+splits = obtener_fragmentos_pdf()
 
 def consultar_agente(pregunta_usuario):
-    docs_relevantes = retriever.invoke(pregunta_usuario)
+    # Obtenemos todo el contenido relevante del PDF como contexto
+    contexto = "\n\n".join([doc.page_content for doc in splits])
+    
+    prompt = f"""
+Eres un robot asistente del Centro Médico Vitalis (atención HUMANA). Tu regla de oro es: Responde SOLO con el contexto proporcionado. Si la respuesta no está en el contexto, di textualmente: 'No dispongo de esa información en mis documentos.'
 
-    if not docs_relevantes:
-        return "Lo siento, no encontré información sobre eso en los documentos del Centro Médico Vitalis."
-         
-    contexto = "\n\n".join([doc.page_content for doc in docs_relevantes])
+CONTEXTO DEL PDF:
+{contexto}
+
+PREGUNTA DEL USUARIO:
+{pregunta_usuario}
+
+RESPUESTA (SI NO ESTÁ EN EL CONTEXTO, DI 'No dispongo de esa información en mis documentos, ¿Tienes alguna otra pregunta?.'):
+"""
     
-    messages = [
-        {"role": "system", "content": "Eres un robot asistente del Centro Médico Vitalis (atención HUMANA). Tu regla de oro es: Responde SOLO con el contexto proporcionado. Si la respuesta no está en el contexto, di textualmente: 'No dispongo de esa información en mis documentos.'"},
-        {"role": "user", "content": f"CONTEXTO DEL PDF:\n{contexto}\n\nPREGUNTA DEL USUARIO:\n{pregunta_usuario}\n\nRESPUESTA (SI NO ESTÁ EN EL CONTEXTO, DI 'No dispongo de esa información en mis documentos, ¿Tienes alguna otra pregunta?.'):"}
-    ]
-    
-    prompt = generator.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-    outputs = generator(prompt, max_new_tokens=150, do_sample=False, temperature=0.0)
-    
-    respuesta_completa = outputs[0]["generated_text"]
-    respuesta_limpia = respuesta_completa.split("<|im_start|>assistant\n")[-1].strip()
-    
-    return respuesta_limpia
+    response = client.models.generate_content(
+        model='gemini-2.5-flash',
+        contents=prompt,
+    )
+    return response.text
     
 #Interfaz interactiva para el usuario
-st.title("🏥 Consultorio Médico Vitalis")
-st.subheader("Sistema de Consultas RAG")
+st.title("🏥 Centro Médico Vitalis")
+st.subheader("Sistema de Consultas e Información")
 
 pregunta = st.text_input("Escribe tu pregunta aquí:")
 
 if st.button("Enviar pregunta"):
     if pregunta.strip():
         with st.spinner("Consultando el documento..."):
-            respuesta = consultar_agente(pregunta)
-            st.success("Respuesta:")
-            st.write(respuesta)
+            try:
+                respuesta = consultar_agente(pregunta)
+                st.success("Respuesta:")
+                st.write(respuesta)
+            except Exception as e:
+                st.error(f"Ocurrió un error: {e}")
     else:
         st.warning("Por favor escribe una pregunta.")
